@@ -1,0 +1,49 @@
+/* 
+#002169 colby blue
+#366BCF bright blue
+#232B3B black blue
+*/
+
+/* Set the height of the page to 100% */
+html, body {
+    height: 100%;
+}
+
+/* body and main atributes */
+main {
+    background-color: #232B3B;
+    color: white;
+    height: calc(100% - 50px);
+}
+
+/* ------- Footer -------- */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px; 
+    background-color: #002169;
+    color: #fff;
+    text-align: center;
+    padding-top: 15px;
+}
+
+/* ------- NavBar -------- */
+.navbar {
+    background-color: #002169;
+}
+.navbar-nav .nav-link {
+    color: white; 
+}
+.navbar-nav .nav-link:active {
+    color: #366BCF; 
+}  
+.navbar-brand {
+    color: #366BCF; 
+} 
+.navbar-nav .active > .nav-link {
+    color: #366BCF;
+}
+
+
+

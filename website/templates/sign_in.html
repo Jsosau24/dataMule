@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dataMULE - Sign In</title>
+
+    <!-- Boostrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main_stylesheet.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sign_in_stylesheet.css') }}">
+    <!-- fonts -->
+
+</head>
+<body>
+
+    <!-- Main Body -->
+    <main>
+        <!-- Main container -->
+        <div class="container-fluid">
+          <h1 class="text-center" id="muleDATA">dataMULE</h1>
+          <h1 class="text-center">Sign In</h1>
+          <form method='POST'>
+            <div class="form-group">
+              <label for="colby_id">Colby ID</label>
+              <input type="text" class="form-control" id="colby_id" name="colby_id" placeholder="Enter your Colby ID">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn btn-block" id="sign-in-btn">Sign In</button>
+          </form>
+      </main>
+  
+      <!-- footer -->
+      <footer class="py-3">
+        <div class="container-fluid text-center">
+          <p>2023 dataMULE</p>
+        </div>
+      </footer>
+    
+</body>
+</html>

@@ -1,0 +1,23 @@
+/* main atributes */
+main {
+    height: calc(100% - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20%;
+}
+
+#muleDATA{
+    color:#366BCF;
+}
+
+#sign-in-btn{
+    background-color: #002169;
+    color: #fff;
+}
+
+
+
+
+

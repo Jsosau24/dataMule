@@ -1,66 +1,45 @@
-# imports
 from . import db
 from flask_login import UserMixin
-from sqlalchemy.sql import func
 
-# models
-
-# User class
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-
-    colby_id = db.Column(db.String(50), unique=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    password = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-
-    role = db.Column(db.Integer)
-    notes_permissions = db.Column(db.Integer)
-
-# Athlete Class
-class Athlete(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-
-    colby_id = db.Column(db.String(50), unique=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    status = db.Column(db.Integer)
-
-    # relationship/connection to other models
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    notes = db.relationship('Note')
-
-# Staff/Coach Class
-class Staff(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-
-    colby_id = db.Column(db.String(50), unique=True)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-
-    # relationship/connection to other models
-    teams = db.relationship('Team')
-
-# Team Class
-class Team(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-
-    team_name = db.Column(db.String(150), unique=True)
-
-   # relationship/connection to other models
-    coach_id = db.Column(db.Integer, db.ForeignKey('staff.id'))
-    athletes = db.relationship('Athlete')
-
-# Note Class
-class Note(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True) 
-
-    writer_id = db.Column(db.Integer) 
-    content = db.Column(db.String(1500)) 
-
-    # relationship/connection to other models
-    athlete_id = db.Column(db.Integer, db.ForeignKey('athlete.id')) 
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
     
+    colby_id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    type = db.Column(db.String(50))
 
+    __mapper_args__ = {
+        'polymorphic_identity':'user',
+        'polymorphic_on':type
+    }
 
+class Admin(User):
+    __mapper_args__ = {
+        'polymorphic_identity':'admin',
+    }
+
+class Peak(User):
+    __mapper_args__ = {
+        'polymorphic_identity':'peak',
+    }
+
+class Coach(User):
+    __mapper_args__ = {
+        'polymorphic_identity':'coach',
+    }
+
+class Athlete(User):
+    __tablename__ = 'athletes'
+    
+    colby_id = db.Column(db.Integer, db.ForeignKey('users.colby_id'), primary_key=True)
+    status = db.Column(db.Integer)
+    gender = db.Column(db.String(50))
+    class_year = db.Column(db.Integer)
+    position = db.Column(db.String(50))
+
+    __mapper_args__ = {
+        'polymorphic_identity':'athlete',
+    }

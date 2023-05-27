@@ -4,7 +4,8 @@ from flask_login import UserMixin
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
-    colby_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    colby_id = db.Column(db.Integer)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
@@ -17,16 +18,27 @@ class User(UserMixin, db.Model):
     }
 
 class Admin(User):
+
+    __tablename__ = 'admin'
+    colby_id = db.Column(db.Integer, db.ForeignKey('users.colby_id'), primary_key=True)
     __mapper_args__ = {
         'polymorphic_identity':'admin',
     }
 
 class Peak(User):
+
+    __tablename__ = 'peak'
+    colby_id = db.Column(db.Integer, db.ForeignKey('users.colby_id'), primary_key=True)
+    
     __mapper_args__ = {
         'polymorphic_identity':'peak',
     }
 
 class Coach(User):
+
+    __tablename__ = 'coaches'
+    colby_id = db.Column(db.Integer, db.ForeignKey('users.colby_id'), primary_key=True)
+    
     __mapper_args__ = {
         'polymorphic_identity':'coach',
     }

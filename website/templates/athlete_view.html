@@ -1,48 +1,96 @@
 {% extends "base.html" %}
 {% block content %}
-
 <main>
-    <div class="container-fluid">
-        <h1 style="padding: 30px;">{{user.first_name}} {{user.last_name}},</h1>
-
+  <div class="container-fluid">
+    <div class="card" style="margin-bottom: 15px;">
+      <div class="card-body">
+        <h1 class="card-title">{{user.first_name}} {{user.last_name}},</h5> <!-- Breaking RFD -->
         <div class="row">
           <div class="col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">FATIGUE</h5> <!-- Breaking RFD -->
-                <p class="card-text">This is card 1.</p>
+            <div class="container-fluid">
+              <p><div class="row"><p class="card-text">Status</p></div>
+              <div class="row">
+                {% if user.status == 0 %}
+                <p class="card-text" style="color: green;">Clear</p>
+                {% elif user.status == 1 %}
+                <p class="card-text" style="color: yellow;">Warning</p>
+                {% else %}
+                <p class="card-text" style="color: red;">Not Clear</p>
+                {% endif %}
               </div>
             </div>
           </div>
-
           <div class="col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">POWER</h5> <!-- RELATIVE POWER -->
-                <p class="card-text">This is card 2.</p>
-              </div>
+            <div class="container-fluid">
+              <div class="row"><p class="card-text">Gender</p></div>
+              <div class="row"><p class="card-text">{{user.gender}}</p></div>
             </div>
           </div>
-
           <div class="col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">MODIFIED REACTIVE STRENGHT INDEX</h5> <!-- MRSi -->
-                <p class="card-text">This is card 3.</p>
+              <div class="container-fluid">
+                <div class="row"><p class="card-text">Class Year</p></div>
+                <div class="row"><p class="card-text">{{user.class_year}}</p></div>
               </div>
-            </div>
           </div>
-
           <div class="col-md-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">JUMP HEIGHT</h5>
-                <p class="card-text">This is card 4.</p>
-              </div>
+            <div class="container-fluid">
+              <div class="row"><p class="card-text">Position</p></div>
+              <div class="row"><p class="card-text">{{user.position}}</p></div>
             </div>
           </div>
         </div>
+      </div>
     </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">FATIGUE</h5> <!-- Breaking RFD -->
+          <p class="card-text">This is card 1.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">POWER</h5> <!-- RELATIVE POWER -->
+          <p class="card-text">This is card 2.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">MODIFIED REACTIVE STRENGHT INDEX</h5> <!-- MRSi -->
+          <p class="card-text">This is card 3.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">JUMP HEIGHT</h5>
+          <p class="card-text">This is card 4.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="card" style="width: 100%; margin-top: 15px;">
+        <div class="card-body">
+          <h5 class="card-title">Notes</h5>
+          <p class="card-text">This is were notes go</p>
+        </div>
+    </div>
+  </div>
+
+</div>
       
 </main>
 

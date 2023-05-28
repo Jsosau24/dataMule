@@ -55,3 +55,24 @@ class Athlete(User):
     __mapper_args__ = {
         'polymorphic_identity':'athlete',
     }
+
+team_coaches = db.Table('team_coaches',
+    db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), primary_key=True),
+    db.Column('coach_id', db.Integer, db.ForeignKey('coaches.colby_id'), primary_key=True)
+)
+
+team_members = db.Table('team_members',
+    db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), primary_key=True),
+    db.Column('athlete_id', db.Integer, db.ForeignKey('athletes.colby_id'), primary_key=True)
+)
+
+class Team(db.Model):
+    __tablename__ = 'teams'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    coach_ids = db.relationship('Coach', secondary=team_coaches, backref='teams')
+    athletes = db.relationship('Athlete', secondary=team_members, lazy='subquery', backref=db.backref('teams', lazy=True))
+
+
+

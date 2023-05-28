@@ -48,7 +48,7 @@ def create_database(app: Flask):
 
 def create_dummy_users():
 
-    from .models import Admin, Peak, Coach, Athlete
+    from .models import Admin, Peak, Coach, Athlete, Team
 
     print('create dummy')
     # Admin
@@ -103,4 +103,13 @@ def create_dummy_users():
         db.session.add(dummy)
         db.session.commit()
 
+    team = Team.query.first()
+    if not team:
+        dummy_team = Team(
+            name="Dummy Team",
+        )
+        dummy_team.coach_ids.append(Coach.query.first())
+        dummy_team.athletes.append(Athlete.query.first())
+        db.session.add(dummy_team)
+        db.session.commit()
     

@@ -25,19 +25,25 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        {% if user.type == 'coach' %}
+        <!-- Dropdown -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                <a class="nav-link" href="#">Item 1</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Item 2</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Item 3</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        My Teams
+                    </a>
+                    <div class="dropdown-menu">
+                        {% for team in user.teams %}
+                        <a class="dropdown-item" href="/team/{{ team.id }}">{{ team.name }}</a>
+                        {% endfor %}
+                    </div>
                 </li>
             </ul>
         </div>
+        {% endif %}
+        
   </nav>
     
     {% block content %}

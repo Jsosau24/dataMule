@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <div class="container-fluid">
+    <div class="card" style="margin-bottom: 15px;">
+      <div class="card-body">
+        <h1 class="card-title">{{team.name}},</h5> <!-- Breaking RFD -->
+      </div>
+    </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">FATIGUE</h5> <!-- Breaking RFD -->
+          <p class="card-text">This is card 1.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">POWER</h5> <!-- RELATIVE POWER -->
+          <p class="card-text">This is card 2.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">MODIFIED REACTIVE STRENGHT INDEX</h5> <!-- MRSi -->
+          <p class="card-text">This is card 3.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">JUMP HEIGHT</h5>
+          <p class="card-text">This is card 4.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="card" style="width: 100%; margin-top: 15px;">
+        <div class="card-body">
+          <h2 class="card-title">Athletes</h2>
+          <div class="container-fluid">
+            <table style="width:100%">
+              <tr>
+                <th style="width: 20%;">Name</th>
+                <th style="width: 20%;">Position</th>
+                <th style="width: 20%;">Status</th>
+                <th style="width: 40%;">Notes</th>
+              </tr>
+              {% for athlete in athletes %}
+              <tr>
+                <td>{{ athlete.first_name }} {{ athlete.last_name }}</td>
+                <td>{{ athlete.position }}</td>
+                <td>
+                  {% if athlete.status == 0 %}
+                  <p class="card-text" style="color: green;">Clear</p>
+                  {% elif athlete.status == 1 %}
+                  <p class="card-text" style="color: yellow;">Warning</p>
+                  {% else %}
+                  <p class="card-text" style="color: red;">Not Clear</p>
+                  {% endif %}
+                </td>
+                <td>other</td> <!-- replace 'other' with the actual attribute name -->
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>
+
+</div>
+      
+</main>
+
+{% endblock %}

@@ -21,7 +21,15 @@ def login():
         login_user(user, remember = True)
 
         if user.type == "admin":
-            return render_template('signup.html', user=user)
+            # Ensure the current user is an admin
+            if current_user.type != "admin":
+                return "<h1>NO ACCESS</h1>"
+
+            # Query all athletes and teams
+            athletes = User.query.filter_by(type='athlete').all()
+            teams = Team.query.all()
+
+            return render_template('admin_dashboard.html', athletes=athletes, teams=teams, user=user)
         
         elif user.type == "peak":
             return render_template('signup.html', user=user)

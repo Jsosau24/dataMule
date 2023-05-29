@@ -48,7 +48,7 @@ def create_database(app: Flask):
 
 def create_dummy_users():
 
-    from .models import Admin, Peak, Coach, Athlete, Team
+    from .models import Admin, Peak, Coach, Athlete, Team, TeamUserAssociation
 
     print('create dummy')
     # Admin
@@ -108,8 +108,35 @@ def create_dummy_users():
         dummy_team = Team(
             name="Dummy Team",
         )
-        dummy_team.coach_ids.append(Coach.query.first())
-        dummy_team.athletes.append(Athlete.query.first())
         db.session.add(dummy_team)
         db.session.commit()
+
+        dummy_admin_association = TeamUserAssociation(
+            user=Admin.query.first(),
+            team=dummy_team,
+            role='admin'
+        )
+        dummy_peak_association = TeamUserAssociation(
+            user=Peak.query.first(),
+            team=dummy_team,
+            role='peak'
+        )
+        dummy_coach_association = TeamUserAssociation(
+            user=Coach.query.first(),
+            team=dummy_team,
+            role='coach'
+        )
+        dummy_athlete_association = TeamUserAssociation(
+            user=Athlete.query.first(),
+            team=dummy_team,
+            role='athlete'
+        )
+
+        db.session.add(dummy_admin_association)
+        db.session.add(dummy_peak_association)
+        db.session.add(dummy_coach_association)
+        db.session.add(dummy_athlete_association)
+        db.session.commit()
+
+
     

@@ -37,10 +37,12 @@ def login():
         elif user.type == "coach":
 
             coach = Coach.query.filter_by(colby_id=current_user.colby_id).first()
-            team  = coach.teams[0]
-            athletes = team.athletes
-
-            if not team:
+            team_association = next((association for association in coach.team_associations if association.role == 'coach'), None)
+            
+            if team_association is not None:
+                team = team_association.team
+                athletes = [association.user for association in team.team_associations if association.role == 'athlete']
+            else:
                 return "<h1>There are no teams</h1>"
         
             return render_template('team_dashboard.html', user=user,team=team, athletes=athletes)

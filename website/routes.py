@@ -28,4 +28,4 @@ def team(id):
         return "<h1>NO TEAM</h1>"
     athletes = team.athletes  
 
-    return render_template('team_dashboard.html', team=team, athletes=athletes)
+    return render_template('team_dashboard.html', team=team, athletes=athletes, user=current_user)

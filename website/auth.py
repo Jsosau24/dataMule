@@ -16,7 +16,7 @@ def login():
         user = User.query.filter_by(colby_id=colby_id).first()
 
         if not user or not check_password_hash(user.password, password):
-            return render_template("login.html", user=current_user)
+            return render_template("login.html", user=current_user, athlete=current_user)
 
         login_user(user, remember = True)
 
@@ -48,7 +48,7 @@ def login():
             return render_template('team_dashboard.html', user=user,team=team, athletes=athletes)
         
         elif user.type == "athlete":
-            return render_template('athlete_view.html', user=user)
+            return render_template('athlete_dashboard.html', user=user)
     
     return render_template('login.html')
 

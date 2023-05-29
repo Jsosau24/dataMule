@@ -18,7 +18,9 @@
                 <input type="text" id="athleteSearch" onkeyup="filterList(this, document.getElementById('athleteList'))" placeholder="Search for athletes.." style="background-color: #333; color: white; width: 100%;">
                 <ul class="list-group" id="athleteList" style="background-color: #333;">
                     {% for athlete in athletes %}
+                    <a href="/athlete/{{ athlete.id }}">
                         <li class="list-group-item" style="background-color: #333;">{{ athlete.first_name }} {{ athlete.last_name }}</li>
+                    </a>
                     {% endfor %}
                 </ul>
             </div>
@@ -27,7 +29,9 @@
                 <input type="text" id="teamSearch" onkeyup="filterList(this, document.getElementById('teamList'))" placeholder="Search for teams.." style="background-color: #333; color: white; width: 100%;">
                 <ul class="list-group" id="teamList" style="background-color: #333;">
                     {% for team in teams %}
-                        <li class="list-group-item" style="background-color: #333;">{{ team.name }}</li>
+                        <a href="/team/{{ team.id }}">
+                            <li class="list-group-item" style="background-color: #333;">{{ team.name }}</li>
+                        </a>
                     {% endfor %}
                 </ul>
             </div>

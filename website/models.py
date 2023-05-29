@@ -75,4 +75,19 @@ class TeamUserAssociation(db.Model):
     user = db.relationship(User, back_populates="team_associations")
     team = db.relationship(Team, back_populates="team_associations")
 
+class Note(db.Model):
+    __tablename__ = 'notes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    visible = db.Column(db.Boolean, default=True)
+    
+    # Foreign Keys
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    receiver_id = db.Column(db.Integer, db.ForeignKey('athletes.colby_id'))
+
+    # Relationships
+    creator = db.relationship('User', foreign_keys=[creator_id], backref='created_notes')
+    receiver = db.relationship('Athlete', foreign_keys=[receiver_id], backref='received_notes')
+
 

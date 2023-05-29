@@ -4,15 +4,15 @@
   <div class="container-fluid">
     <div class="card" style="margin-bottom: 15px;">
       <div class="card-body">
-        <h1 class="card-title">{{user.first_name}} {{user.last_name}},</h5> <!-- Breaking RFD -->
+        <h1 class="card-title">{{athlete.first_name}} {{athlete.last_name}},</h5> 
         <div class="row">
           <div class="col-md-3">
             <div class="container-fluid">
               <p><div class="row"><p class="card-text">Status</p></div>
               <div class="row">
-                {% if user.status == 0 %}
+                {% if athlete.status == 0 %}
                 <p class="card-text" style="color: green;">Clear</p>
-                {% elif user.status == 1 %}
+                {% elif uathleteser.status == 1 %}
                 <p class="card-text" style="color: yellow;">Warning</p>
                 {% else %}
                 <p class="card-text" style="color: red;">Not Clear</p>
@@ -23,19 +23,19 @@
           <div class="col-md-3">
             <div class="container-fluid">
               <div class="row"><p class="card-text">Gender</p></div>
-              <div class="row"><p class="card-text">{{user.gender}}</p></div>
+              <div class="row"><p class="card-text">{{athlete.gender}}</p></div>
             </div>
           </div>
           <div class="col-md-3">
               <div class="container-fluid">
                 <div class="row"><p class="card-text">Class Year</p></div>
-                <div class="row"><p class="card-text">{{user.class_year}}</p></div>
+                <div class="row"><p class="card-text">{{athlete.class_year}}</p></div>
               </div>
           </div>
           <div class="col-md-3">
             <div class="container-fluid">
               <div class="row"><p class="card-text">Position</p></div>
-              <div class="row"><p class="card-text">{{user.position}}</p></div>
+              <div class="row"><p class="card-text">{{athlete.position}}</p></div>
             </div>
           </div>
         </div>

@@ -61,7 +61,10 @@
               </tr>
               {% for athlete in athletes %}
               <tr>
-                <td>{{ athlete.first_name }} {{ athlete.last_name }}</td>
+                <td>
+                  <a href="/athlete/{{ athlete.id }}">
+                    {{ athlete.first_name }} {{ athlete.last_name }}</td>
+                  </a>
                 <td>{{ athlete.position }}</td>
                 <td>
                   {% if athlete.status == 0 %}

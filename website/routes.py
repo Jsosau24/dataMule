@@ -13,7 +13,7 @@ def athlete():
     
     #add code to use data to create the graphs
 
-    return render_template('athlete_view.html', user=current_user)
+    return render_template('athlete_dashboard.html', athlete=current_user, user=current_user)
 
 # coach/staff view
 @routes.route('/team/<int:id>', methods = ['GET', 'POST'])
@@ -24,11 +24,23 @@ def team(id):
         return "<h1>NO ACCESS</h1>"
     
     team = Team.query.get(id)
-    if team is None:
-        return "<h1>NO TEAM</h1>"
-    athletes = team.athletes  
+
+    # Use the association table to get the athletes in the team
+    athletes = [association.user for association in team.team_associations if association.role == 'athlete']
 
     return render_template('team_dashboard.html', team=team, athletes=athletes, user=current_user)
+
+#route for athlete dashboard for coaches, peak and admin
+@routes.route('/athlete/<int:id>', methods = ['GET', 'POST'])
+@login_required
+def athlete_coach(id):
+
+    if current_user.type == "athlete":
+        return "<h1>NO ACCESS</h1>"
+    
+    athlete = Athlete.query.get(id)
+
+    return render_template('athlete_dashboard.html', athlete=athlete, user=current_user)
 
 # admin view
 @routes.route('/admin-dashboard')

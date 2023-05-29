@@ -49,8 +49,7 @@ def create_database(app: Flask):
 def create_dummy_users():
 
     from .models import Admin, Peak, Coach, Athlete, Team, TeamUserAssociation
-
-    print('create dummy')
+    
     # Admin
     user = Admin.query.first()
     if not user:

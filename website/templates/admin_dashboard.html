@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-6">
                 <h2 style="text-align: center; background-color: #002169;">Athletes</h2>
-                <input class="form-control" id="athleteSearch" type="text" placeholder="Search Athletes..." style="background-color: #333; color: white;">
+                <input type="text" id="athleteSearch" onkeyup="filterList(this, document.getElementById('athleteList'))" placeholder="Search for athletes.." style="background-color: #333; color: white; width: 100%;">
                 <ul class="list-group" id="athleteList" style="background-color: #333;">
                     {% for athlete in athletes %}
                         <li class="list-group-item" style="background-color: #333;">{{ athlete.first_name }} {{ athlete.last_name }}</li>
@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-6">
                 <h2 style="text-align: center; background-color: #002169;">Teams</h2>
-                <input class="form-control" id="teamSearch" type="text" placeholder="Search Teams..." style="background-color: #333; color: white;">
+                <input type="text" id="teamSearch" onkeyup="filterList(this, document.getElementById('teamList'))" placeholder="Search for teams.." style="background-color: #333; color: white; width: 100%;">
                 <ul class="list-group" id="teamList" style="background-color: #333;">
                     {% for team in teams %}
                         <li class="list-group-item" style="background-color: #333;">{{ team.name }}</li>
@@ -33,30 +33,20 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function filterList(inputElement, listElement) {
+        let filter = inputElement.value.toUpperCase();
+        let li = listElement.getElementsByTagName('li');
+        
+        // Loop through all list items, and hide those who don't match the search query
+        for (let i = 0; i < li.length; i++) {
+            let text = li[i].textContent || li[i].innerText;
+            li[i].style.display = (text.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+        }
+    }
+    </script>
+
 </main>
-
-{% endblock %}
-
-
-<!-- Scripts for the search columns -->
-{% block scripts %}
-
-<script>
-    $(document).ready(function(){
-        $("#athleteSearch").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#athleteList li").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-
-        $("#teamSearch").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#teamList li").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-    });
-</script>
 
 {% endblock %}

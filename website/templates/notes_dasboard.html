@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  
+    <div class="container">
+        <h1>Notes</h1>
+        
+        <!-- Search Bar -->
+        <input type="text" style="background-color: #333; color: white; width: 100%;" id="noteSearch" onkeyup="filterNotes()" placeholder="Search by athlete name..">
+      
+        <!-- Notes Table -->
+        <div class="card" style="width: 100%; margin-top: 15px; color: white;">
+            <table class="table table-striped">
+                <thead style="color: white;">
+                  <tr>
+                    <th style="width: 20%;">Name</th>
+                    <th style="width: 15%;">Date</th>
+                    <th style="width: 30%;">Text</th>
+                    <th style="width: 20%;">Created By</th>
+                    <th style="width: 5%;">Visible</th>
+                  </tr>
+                </thead>
+                <tbody id="noteTable" style="color: white;">
+                  {% for note in notes %}
+                  <tr>
+                    <td>{{ note.receiver.first_name }} {{ note.receiver.last_name }}</td>
+                    <td>{{ note.created_at.strftime('%B %d, %Y') }}</td>
+                    <td>{{ note.text }}</td>
+                    <td>{{ note.creator.first_name }} {{ note.creator.last_name }}</td>
+                    <td>
+                      <input type="checkbox" id="visibleCheckbox{{ note.id }}" {% if note.visible %}checked{% endif %} onclick="toggleVisibility({{ note.id }})">
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      </div>
+      
+    <script>
+        // Function to filter notes based on athlete name
+        function filterNotes() {
+          var input, filter, table, tr, td, i;
+          input = document.getElementById("noteSearch");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("noteTable");
+          tr = table.getElementsByTagName("tr");
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+        
+        // Function to toggle note visibility
+        function toggleVisibility(noteId) {
+            var checkbox = document.getElementById("visibleCheckbox" + noteId);
+            var visibility = checkbox.checked;
+
+            // Send AJAX request to update note visibility
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/note/edit/" + noteId, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        if (visibility) {
+                            alert("Note is now visible");
+                        } else {
+                            alert("Note is now hidden");
+                        }
+                    } else {
+                        alert("Failed to update note visibility");
+                    }
+                }
+            };
+
+            var data = JSON.stringify({ visibility: visibility });
+            xhr.send(data);
+        }
+    </script>
+      
+      
+</main>
+
+{% endblock %}

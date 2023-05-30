@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, request
+from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from .models import Peak, Team, Athlete, User, Note, Coach, TeamUserAssociation
 from . import db
@@ -7,7 +7,6 @@ routes = Blueprint('main', __name__)
 
 # home route
 @routes.route('/')
-@login_required
 def home():
 
     user = current_user
@@ -129,12 +128,12 @@ def new_note():
             # sort athletes by last name
             athletes.sort(key=lambda athlete: athlete.last_name)
 
-            return render_template('create_notes-dashboard.html', athletes=athletes, user=current_user)
+            return render_template('create_notes_dashboard.html', athletes=athletes, user=current_user)
 
         elif current_user.type == "admin":
 
             athletes = User.query.filter_by(type='athlete').all()
-            return render_template('create_notes-dashboard.html', athletes=athletes, user=current_user)
+            return render_template('create_notes_dashboard.html', athletes=athletes, user=current_user)
 
     if request.method == 'POST':
         athlete_id = request.form.get('athlete')
@@ -160,7 +159,36 @@ def new_note():
             db.session.commit()
 
             # Redirect to wherever you want to go after successfully submitting the note
-            if current_user.type == "peak":
-                return redirect(url_for('main.home'))
+            return redirect(url_for('main.new_note'))
+            
+# notes dasboard page
+@routes.route('/note/dashboard', methods=['GET'])
+@login_required
+def notes_dashboard():
+
+    if current_user.type == "peak":
+        # Get all notes created by the peak
+        notes = Note.query.filter_by(creator_id=current_user.id).order_by(Note.created_at.desc()).all()
+        print('notes')
+        print(notes)
+
+    else:
+        notes = Note.query.order_by(Note.created_at.desc()).all()
+
+    # Render the admin dashboard template with the notes
+    return render_template('notes_dasboard.html',user=current_user, notes=notes)
+
+
+@routes.route('/note/edit/<int:note_id>', methods=['POST'])
+def update_note_visibility(note_id):
+
+    note = Note.query.get(note_id)
+    if note:
+        visibility = request.json.get('visibility')
+        note.visible = visibility
+        db.session.commit()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False)
 
 

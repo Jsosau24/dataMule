@@ -1,4 +1,5 @@
 from . import db
+from datetime import datetime
 from flask_login import UserMixin
 
 class User(UserMixin, db.Model):
@@ -81,6 +82,7 @@ class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     visible = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     
     # Foreign Keys
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))

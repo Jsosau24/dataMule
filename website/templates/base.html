@@ -47,6 +47,7 @@
         <!-- create notes btn -->
         {% if current_user.type in ['admin', 'peak'] %}
         <a class="btn" href="{{ url_for('main.new_note') }}" style="text-align: center; background-color: #002169; color: white; width: 100%;">Create Note</a>
+        <a class="btn" href="{{ url_for('main.notes_dashboard') }}" style="text-align: center; background-color: #002169; color: white; width: 100%;">Notes Admin</a>
         {% endif %}
 
         <!-- Logout button -->

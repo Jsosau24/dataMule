@@ -12,7 +12,7 @@
               <div class="row">
                 {% if athlete.status == 0 %}
                 <p class="card-text" style="color: green;">Clear</p>
-                {% elif uathleteser.status == 1 %}
+                {% elif athlete.status == 1 %}
                 <p class="card-text" style="color: yellow;">Warning</p>
                 {% else %}
                 <p class="card-text" style="color: red;">Not Clear</p>
@@ -85,7 +85,9 @@
       <div class="card" style="width: 100%; margin-top: 15px;">
         <div class="card-body">
           <h5 class="card-title">Notes</h5>
-          <p class="card-text">This is were notes go</p>
+          {% for note in notes %}
+            <p>--> {{ note.text }}</p>
+          {% endfor %}
         </div>
     </div>
   </div>

@@ -75,7 +75,13 @@
                   <p class="card-text" style="color: red;">Not Clear</p>
                   {% endif %}
                 </td>
-                <td>other</td> <!-- replace 'other' with the actual attribute name -->
+                <td>
+                  {% if athlete.received_notes %}
+                  {{ athlete.received_notes[-1].text if athlete.received_notes[-1].visible else "No visible notes" }}
+                  {% else %}
+                  No notes received
+                  {% endif %}
+                </td> 
               </tr>
               {% endfor %}
             </table>

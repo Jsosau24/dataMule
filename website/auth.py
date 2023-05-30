@@ -2,7 +2,7 @@ from flask import Blueprint, request, redirect, url_for, render_template
 from flask_login import login_user, logout_user, current_user
 from werkzeug.security import check_password_hash
 
-from .models import User, Team, Coach, Admin
+from .models import User, Team, Coach, Admin, Peak
 
 auth = Blueprint('auth', __name__)
 
@@ -32,7 +32,16 @@ def login():
             return render_template('admin_dashboard.html', athletes=athletes, teams=teams, user=user)
         
         elif user.type == "peak":
-            return render_template('signup.html', user=user)
+            peak = Peak.query.filter_by(colby_id=current_user.colby_id).first()
+            team_association = next((association for association in peak.team_associations if association.role == 'peak'), None)
+            
+            if team_association is not None:
+                team = team_association.team
+                athletes = [association.user for association in team.team_associations if association.role == 'athlete']
+            else:
+                return "<h1>There are no teams</h1>"
+        
+            return render_template('team_dashboard.html', user=user,team=team, athletes=athletes)
         
         elif user.type == "coach":
 
@@ -48,7 +57,9 @@ def login():
             return render_template('team_dashboard.html', user=user,team=team, athletes=athletes)
         
         elif user.type == "athlete":
-            return render_template('athlete_dashboard.html', user=user)
+            visible_notes = [note for note in current_user.received_notes if note.visible]
+
+            return render_template('athlete_dashboard.html', athlete=current_user, user=current_user, notes=visible_notes)
     
     return render_template('login.html')
 

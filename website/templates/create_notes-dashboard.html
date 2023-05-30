@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+    <div class="container-fluid">
+        <h1>New Note</h1>
+    </div>
+    <div class="container-fluid">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-3" style="height: 80%;">
+                    <h2 style="text-align: center; background-color: #002169;">Athletes</h2>
+                    <input type="text" id="athleteSearch" onkeyup="filterList(this, document.getElementById('athleteList'))" placeholder="Search for athletes.." style="background-color: #333; color: white; width: 100%;">
+                    <ul class="list-group" id="athleteList" style="background-color: #333;">
+                        {% for athlete in athletes %}
+                        <a>
+                            <li class="list-group-item" style="background-color: #333; overflow-y: scroll; max-height: 100%;">
+                                <input type="radio" id="athlete{{ athlete.id }}" name="athlete" value="{{ athlete.id }}">
+                                <label for="athlete{{ athlete.id }}">{{ athlete.first_name }} {{ athlete.last_name }}</label>
+                            </li>
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-9" style="height: 80%;">
+                    <h2>Note</h2>
+                    <textarea class="form-control" id="note" name="note" rows="4" placeholder="Write your note here..."></textarea>
+        
+                    <h2>Status Change</h2>
+                    <select class="form-control" id="status" name="status">
+                        <option value="0">Clear</option>
+                        <option value="1">Warning</option>
+                        <option value="2">Not Clear</option>
+                    </select>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <input type="submit" class="btn btn-primary" value="Submit Note" width="100%">
+            </div>
+        </form>        
+    </div>
+
+    <script>
+        function filterList(inputElement, listElement) {
+            let filter = inputElement.value.toUpperCase();
+            let li = listElement.getElementsByTagName('li');
+            
+            // Loop through all list items, and hide those who don't match the search query
+            for (let i = 0; i < li.length; i++) {
+                let text = li[i].textContent || li[i].innerText;
+                li[i].style.display = (text.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+            }
+        }
+    </script>
+    
+</main>
+
+{% endblock %}

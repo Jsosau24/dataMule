@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+
+<main>
+    <div class="container-fluid">
+        <h1>Edit {{team.name}},</h1>
+    </div>
+
+    <!-- columns for athletes and peaks -->
+    <div class="row" style="width: 100%; margin: 0px; padding-top: 10px;">
+        <div class="col-md-4">
+            <h2 style="text-align: center; background-color: #002169;">Athletes</h2>
+            <input type="text" id="athleteSearch" onkeyup="filterList(this, document.getElementById('athleteList'))" placeholder="Search for athletes.." style="background-color: #333; color: white; width: 100%;">
+            <ul class="list-group" id="athleteList" style="background-color: #333;">
+                {% for athlete in athletes %}
+                <a>
+                    <li class="list-group-item" style="background-color: #333;">
+                        <input type="checkbox" id="athleteCheckbox{{ athlete.id }}" {% if has_athlete(team, athlete) %}checked{% endif %} onclick="toggleTeam({{ team.id }}, {{ athlete.id }})">
+                        <label for="athleteCheckbox{{ athlete.id }}">{{ athlete.first_name }} {{ athlete.last_name }}</label>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>        
+        <div class="col-md-4">
+            <h2 style="text-align: center; background-color: #002169;">Coaches</h2>
+            <input type="text" id="teamSearch" onkeyup="filterList(this, document.getElementById('coachList'))" placeholder="Search for PEAKs.." style="background-color: #333; color: white; width: 100%;">
+            <ul class="list-group" id="coachList" style="background-color: #333;">
+                {% for coach in coaches %}
+                <a>
+                    <li class="list-group-item" style="background-color: #333;">
+                        <input type="checkbox" id="athleteCheckbox{{ coach.id }}" {% if has_coach(team, coach) %}checked{% endif %} onclick="toggleTeam({{ team.id }}, {{ coach.id }})">
+                        <label for="athleteCheckbox{{ coach.id }}">{{ coach.first_name }} {{ coach.last_name }}</label>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>  
+        <div class="col-md-4">
+            <h2 style="text-align: center; background-color: #002169;">PEAKs</h2>
+            <input type="text" id="peakSearch" onkeyup="filterList(this, document.getElementById('peakList'))" placeholder="Search for PEAKs.." style="background-color: #333; color: white; width: 100%;">
+            <ul class="list-group" id="peakList" style="background-color: #333;">
+                {% for peak in peaks %}
+                <a>
+                    <li class="list-group-item" style="background-color: #333;">
+                        <input type="checkbox" id="athleteCheckbox{{ peak.id }}" {% if has_peak(team, peak) %}checked{% endif %} onclick="toggleTeam({{ team.id }}, {{ peak.id }})">
+                        <label for="athleteCheckbox{{ peak.id }}">{{ peak.first_name }} {{ peak.last_name }}</label>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+    function filterList(inputElement, listElement) {
+        let filter = inputElement.value.toUpperCase();
+        let li = listElement.getElementsByTagName('li');
+        
+        // Loop through all list items, and hide those who don't match the search query
+        for (let i = 0; i < li.length; i++) {
+            let text = li[i].textContent || li[i].innerText;
+            li[i].style.display = (text.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+        }
+    }
+
+    function toggleTeam(teamId, userId) {
+        var checkbox = document.getElementById("athleteCheckbox" + userId);
+        var membership = checkbox.checked;
+
+        // Send AJAX request to update team
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/update_team/" + teamId + "/" + userId, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    if (membership) {
+                        alert("User added to the team");
+                    } else {
+                        alert("User removed from the team");
+                    }
+                } else {
+                    alert("Failed to update team");
+                }
+            }
+        };
+
+        var data = JSON.stringify({ membership: membership });
+        xhr.send(data);
+    }
+    </script>
+
+</main>
+
+{% endblock %}

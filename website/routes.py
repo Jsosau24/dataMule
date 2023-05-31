@@ -106,6 +106,73 @@ def admin_dashboard():
 
     return render_template('admin_dashboard.html', athletes=athletes, teams=teams, user=current_user)
 
+@routes.route('/team/edit/dashboard')
+@login_required
+def team_edit_dashboard():
+
+    # Ensure the current user is an admin
+    if current_user.type != "admin":
+        return "<h1>NO ACCESS</h1>"
+
+    # Query all teams
+    teams = Team.query.all()
+
+    return render_template('team_edit_dashboard.html', teams=teams, user=current_user)
+
+@routes.route('/team/edit/<int:id>')
+@login_required
+def team_edit(id):
+
+    # Ensure the current user is an admin
+    if current_user.type != "admin":
+        return "<h1>NO ACCESS</h1>"
+
+    # Query all athletes and Peak users
+    athletes = User.query.filter_by(type='athlete').all()
+    peaks = User.query.filter_by(type='peak').all()
+    coaches = User.query.filter_by(type='coach').all()
+    team = Team.query.get(id)
+
+    def has_athlete(team, athlete):
+        return any(association.user == athlete for association in team.team_associations if association.role == 'athlete')
+    def has_coach(team, coach):
+        return any(association.user == coach for association in team.team_associations if association.role == 'coach')
+    def has_peak(team, peak):
+        return any(association.user == peak for association in team.team_associations if association.role == 'peak')
+
+
+    return render_template('team_edit.html', athletes=athletes, peaks=peaks, user=current_user, team=team, coaches=coaches, has_athlete=has_athlete,has_coach=has_coach,has_peak=has_peak)
+
+@routes.route('/update_team/<int:team_id>/<int:user_id>', methods=['POST'])
+def update_team(team_id, user_id):
+    team = Team.query.get(team_id)
+    user = User.query.get(user_id)
+    
+
+    if team and user:
+        membership = request.json.get('membership')
+        team_association = next(
+            (association for association in team.team_associations if association.user == user), None
+        )
+
+        if membership:
+            print('in if statement')
+            if not team_association:
+                print(team)
+                print(user.type)
+                team_association = TeamUserAssociation(team=team, user=user, role=user.type)
+                db.session.add(team_association)
+        else:
+            if team_association:
+                db.session.delete(team_association)
+
+        db.session.commit()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False)
+
+
+
 # create note website 
 @routes.route('/note/new', methods=['GET', 'POST'])
 @login_required

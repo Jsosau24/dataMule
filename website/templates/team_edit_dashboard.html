@@ -3,33 +3,18 @@
 
 <main>
     <div class="container-fluid">
-        <h1>Welcome back {{user.first_name}} {{user.last_name}}!</h1>
+        <h1>Select a team to edit the users on it!</h1>
     </div>
-    <!-- asign athletes and coaches to teams button-->
-    <div class="container-fluid">
-        <a href="{{ url_for('main.team_edit_dashboard') }}" class="btn" style="text-align: center; background-color: #002169; color: white; width: 100%; margin-bottom: 15px;">Athlethes and Coach assigment to a Team</a>
-
-    </div>
+    
     <!-- columns for athltes and teams -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
-                <h2 style="text-align: center; background-color: #002169;">Athletes</h2>
-                <input type="text" id="athleteSearch" onkeyup="filterList(this, document.getElementById('athleteList'))" placeholder="Search for athletes.." style="background-color: #333; color: white; width: 100%;">
-                <ul class="list-group" id="athleteList" style="background-color: #333;">
-                    {% for athlete in athletes %}
-                    <a href="/athlete/{{ athlete.id }}">
-                        <li class="list-group-item" style="background-color: #333;">{{ athlete.first_name }} {{ athlete.last_name }}</li>
-                    </a>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <h2 style="text-align: center; background-color: #002169;">Teams</h2>
                 <input type="text" id="teamSearch" onkeyup="filterList(this, document.getElementById('teamList'))" placeholder="Search for teams.." style="background-color: #333; color: white; width: 100%;">
                 <ul class="list-group" id="teamList" style="background-color: #333;">
                     {% for team in teams %}
-                        <a href="/team/{{ team.id }}">
+                        <a href="/team/edit/{{ team.id }}">
                             <li class="list-group-item" style="background-color: #333;">{{ team.name }}</li>
                         </a>
                     {% endfor %}

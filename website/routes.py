@@ -119,6 +119,115 @@ def team_edit_dashboard():
 
     return render_template('team_edit_dashboard.html', teams=teams, user=current_user)
 
+# edit the position from the coach daashboard
+@routes.route('/update_position/<int:athlete_id>', methods=['POST'])
+@login_required
+def update_position(athlete_id):
+    athlete = Athlete.query.get(athlete_id)
+    if not athlete:
+        return jsonify(success=False)
+
+    position = request.json.get('position')
+
+    # Update the athlete's position
+    athlete.position = position
+    db.session.commit()
+
+    return jsonify(success=True)
+
+
+@routes.route('/user/edit/dashboard')
+@login_required
+def user_edit_dashboard():
+
+    # Ensure the current user is an admin
+    if current_user.type != "admin":
+        return "<h1>NO ACCESS</h1>"
+
+    # Query all users
+    users = User.query.all()
+
+    return render_template('user_edit_dashboard.html', users=users, user=current_user)
+
+@routes.route('/user/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def user_edit(id):
+
+    # Ensure the current user is an admin
+    if current_user.type != "admin":
+        return "<h1>NO ACCESS</h1>"
+
+    # Query all users
+    edited_user = User.query.get(id)
+
+    if request.method == 'POST':
+
+        #checks if the admin wants to change the type of user
+        if edited_user.type != request.form.get('type'):
+
+            from .models import Admin, Peak, Coach, Athlete
+
+            if request.form.get('type') == "admin":
+                u = Admin(colby_id = edited_user.colby_id,
+                    first_name = request.form.get('first_name'),
+                    last_name = request.form.get('last_name'),
+                    password = edited_user.password,
+                    email = request.form.get('email')
+                    )
+                db.session.delete(edited_user)
+                db.session.add(u)
+                db.session.commit()
+
+            elif request.form.get('type') == "peak":
+                u = Peak(colby_id = edited_user.colby_id,
+                    first_name = request.form.get('first_name'),
+                    last_name = request.form.get('last_name'),
+                    password = edited_user.password,
+                    email = request.form.get('email')
+                    )
+                db.session.delete(edited_user)
+                db.session.add(u)
+                db.session.commit()
+
+            elif request.form.get('type') == "coach":
+                u = Coach(colby_id = edited_user.colby_id,
+                    first_name = request.form.get('first_name'),
+                    last_name = request.form.get('last_name'),
+                    password = edited_user.password,
+                    email = request.form.get('email')
+                    )
+                db.session.delete(edited_user)
+                db.session.add(u)
+                db.session.commit()
+            
+            elif request.form.get('type') == "athlete":
+                u = Athlete(colby_id = edited_user.colby_id,
+                    first_name = request.form.get('first_name'),
+                    last_name = request.form.get('last_name'),
+                    password = edited_user.password,
+                    email = request.form.get('email'),
+                    gender = request.form.get('gender'),
+                    class_year = request.form.get('class_year')
+                    )
+                db.session.delete(edited_user)
+                db.session.add(u)
+                db.session.commit()
+            
+        else:
+            edited_user.first_name = request.form.get('first_name')
+            edited_user.last_name = request.form.get('last_name')
+            edited_user.email = request.form.get('email')
+            if edited_user.type == 'athlete':
+                edited_user.gender = request.form.get('gender')
+                edited_user.class_year = request.form.get('class_year')
+
+            # Save the changes to the database
+            db.session.commit()
+
+        return redirect(url_for('main.user_edit_dashboard'))
+
+    return render_template('user_edit.html', edited_user=edited_user, user=current_user)
+
 @routes.route('/team/edit/<int:id>')
 @login_required
 def team_edit(id):
@@ -170,8 +279,6 @@ def update_team(team_id, user_id):
         return jsonify(success=True)
     else:
         return jsonify(success=False)
-
-
 
 # create note website 
 @routes.route('/note/new', methods=['GET', 'POST'])
@@ -244,7 +351,6 @@ def notes_dashboard():
 
     # Render the admin dashboard template with the notes
     return render_template('notes_dasboard.html',user=current_user, notes=notes)
-
 
 @routes.route('/note/edit/<int:note_id>', methods=['POST'])
 def update_note_visibility(note_id):

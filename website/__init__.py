@@ -96,7 +96,7 @@ def create_dummy_users():
                     email = "athlete@colby.edu",
                     status = 0,
                     gender = 'Male',
-                    class_year = '2024',
+                    class_year = 2024,
                     position = 'Pro'
                     )
         db.session.add(dummy)

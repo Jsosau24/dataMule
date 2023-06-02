@@ -1,0 +1,27 @@
+<!--
+Jonathan Sosa
+dataMULE
+May - June 23
+-->
+{% extends "base.html" %}
+{% block content %}
+
+<main>
+    <div class="container-fluid">
+        <h1>Create New Users Using Excel or CSV,</h1>
+    </div>
+
+    <div class="container mt-5">
+        <h3 class="mb-4">Submit Excel File</h3>
+        <h5 class="mb-4">Make Sure the file contains the next columns: Colby ID, Name, Last Name, Email, Type, Gender, Class Year</h5>
+        <form action="/user/new_csv" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Choose Excel File:</label>
+                <input type="file" id="file" name="file" accept=".xlsx, .xls, .csv">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</main>
+
+{% endblock %}

@@ -1,11 +1,40 @@
+"""
+Jonathan Sosa 
+routes.py
+may-jun 2023
+"""
+
+# routes on the file (you can look these up and it will take you there)
+## home --> redirects each user to their homepage
+## athlete --> athlete view or athlete main page
+## team --> team dasboard everyone but athelte has access
+## athlete_coach --> view of an athelte from any other user but athlete
+## admin_dashboard --> main view for an admin
+## team_edit_dashboard --> dashboard with all the teams where you can select one to edit it
+## update_position --> edit the position of an athlete from the team dashboard
+## user_edit_dashboard --> dashboard with all the users where you can chose one to edit it
+## user_edit --> handles the edits on any user
+## team_edit --> page where you can choose users on a team
+## update_team --> backend for updating the team
+## new_note --> creates a new note
+## notes_dashboard --> dasboard with all the notes created by the user
+## update_note_visibility --> handles the backend to change the visibility of a note
+## new_user --> route to create a new user
+## new_user_csv --> creates a number of users using an CSV file
+## remove_user --> removes a user form the db
+
+# Imports
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from .models import Peak, Team, Athlete, User, Note, Coach, TeamUserAssociation
 from . import db
+from website.helper_functions import create_user, create_user_csv
+import pandas as pd
 
+#Flask blueprint
 routes = Blueprint('main', __name__)
 
-# home route
+#routes
 @routes.route('/')
 def home():
 
@@ -53,7 +82,7 @@ def home():
     
     return render_template('login.html')
 
-# athlete view
+
 @routes.route('/athlete')
 @login_required
 def athlete():
@@ -64,7 +93,6 @@ def athlete():
 
     return render_template('athlete_dashboard.html', athlete=current_user, user=current_user, notes=visible_notes)
 
-# coach/staff view
 @routes.route('/team/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def team(id):
@@ -79,7 +107,6 @@ def team(id):
 
     return render_template('team_dashboard.html', team=team, athletes=athletes, user=current_user)
 
-#route for athlete dashboard for coaches, peak and admin
 @routes.route('/athlete/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def athlete_coach(id):
@@ -91,7 +118,6 @@ def athlete_coach(id):
 
     return render_template('athlete_dashboard.html', athlete=athlete, user=current_user)
 
-# admin view
 @routes.route('/admin-dashboard')
 @login_required
 def admin_dashboard():
@@ -119,7 +145,6 @@ def team_edit_dashboard():
 
     return render_template('team_edit_dashboard.html', teams=teams, user=current_user)
 
-# edit the position from the coach daashboard
 @routes.route('/update_position/<int:athlete_id>', methods=['POST'])
 @login_required
 def update_position(athlete_id):
@@ -134,7 +159,6 @@ def update_position(athlete_id):
     db.session.commit()
 
     return jsonify(success=True)
-
 
 @routes.route('/user/edit/dashboard')
 @login_required
@@ -249,14 +273,12 @@ def team_edit(id):
     def has_peak(team, peak):
         return any(association.user == peak for association in team.team_associations if association.role == 'peak')
 
-
     return render_template('team_edit.html', athletes=athletes, peaks=peaks, user=current_user, team=team, coaches=coaches, has_athlete=has_athlete,has_coach=has_coach,has_peak=has_peak)
 
 @routes.route('/update_team/<int:team_id>/<int:user_id>', methods=['POST'])
 def update_team(team_id, user_id):
     team = Team.query.get(team_id)
     user = User.query.get(user_id)
-    
 
     if team and user:
         membership = request.json.get('membership')
@@ -265,10 +287,7 @@ def update_team(team_id, user_id):
         )
 
         if membership:
-            print('in if statement')
             if not team_association:
-                print(team)
-                print(user.type)
                 team_association = TeamUserAssociation(team=team, user=user, role=user.type)
                 db.session.add(team_association)
         else:
@@ -280,7 +299,6 @@ def update_team(team_id, user_id):
     else:
         return jsonify(success=False)
 
-# create note website 
 @routes.route('/note/new', methods=['GET', 'POST'])
 @login_required
 def new_note():
@@ -343,8 +361,6 @@ def notes_dashboard():
     if current_user.type == "peak":
         # Get all notes created by the peak
         notes = Note.query.filter_by(creator_id=current_user.id).order_by(Note.created_at.desc()).all()
-        print('notes')
-        print(notes)
 
     else:
         notes = Note.query.order_by(Note.created_at.desc()).all()
@@ -363,5 +379,90 @@ def update_note_visibility(note_id):
         return jsonify(success=True)
     else:
         return jsonify(success=False)
+    
+@routes.route('/user/new', methods=['GET', 'POST'])
+@login_required
+def new_user():
 
+    # Ensure the current user is an admin
+    if current_user.type != "admin":
+        return "<h1>NO ACCESS</h1>"
+    
+    if request.method == 'POST':
+
+        print('post')
+        bol,user = create_user(request.form.get('colby_id'), 
+                               request.form.get('first_name'), 
+                               request.form.get('last_name'), 
+                               request.form.get('email'), 
+                               request.form.get('gender'), 
+                               request.form.get('class_year'), 
+                               request.form.get('type'))
+        if bol:
+            print('User Created')
+            db.session.add(user)
+            db.session.commit()
+            return(redirect(url_for('main.user_edit_dashboard')))
+
+        else:
+            # can also be an array with the colby id and the reason of the error
+            print(user)
+            return(redirect(url_for('main.new_user')))
+
+    return render_template('user_new.html', user=current_user)
+
+@routes.route('/user/new_csv', methods=['GET', 'POST'])
+@login_required
+def new_user_csv():
+
+    if request.method == 'POST':
+        
+        ALLOWED_EXTENSIONS = {'xlsx', 'xls', 'csv'}
+
+        def allowed_file(filename):
+            return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+        if 'file' not in request.files:
+            flash('No file uploaded')
+            return render_template('user_new_csv.html', user=current_user)
+        
+        file = request.files['file']
+
+        if file.filename == '':
+            flash('No selected file')
+            return render_template('user_new_csv.html', user=current_user)
+
+        if file and allowed_file(file.filename):
+            errors = create_user_csv(file)
+            print(errors)
+            return(redirect(url_for('main.user_edit_dashboard')))
+            
+        else:
+            flash('Invalid file type')
+            return render_template('user_new_csv.html', user=current_user)
+        
+
+    return render_template('user_new_csv.html', user=current_user)
+
+@routes.route('/user/remove/<int:id>', methods=['POST'])
+@login_required
+def remove_user(id):
+    # Ensure the current user is an admin
+    if current_user.type != "admin":
+        return "<h1>NO ACCESS</h1>"
+
+    user = User.query.get(id)
+
+    # Check if the user exists
+    if not user:
+        return "<h1>User not found</h1>"
+
+    # Remove the user from the database
+    db.session.delete(user)
+    db.session.commit()
+
+    # Prepare the response JSON
+    response = {"success": True}
+
+    return jsonify(response)
 

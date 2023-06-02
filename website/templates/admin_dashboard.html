@@ -1,3 +1,8 @@
+<!--
+Jonathan Sosa
+dataMULE
+May - June 23
+-->
 {% extends "base.html" %}
 {% block content %}
 
@@ -9,6 +14,10 @@
     <div class="container-fluid">
         <a href="{{ url_for('main.team_edit_dashboard') }}" class="btn" style="text-align: center; background-color: #002169; color: white; width: 100%; margin-bottom: 15px;">Athlethes and Coach assigment to a Team</a>
         <a href="{{ url_for('main.user_edit_dashboard') }}" class="btn" style="text-align: center; background-color: #002169; color: white; width: 100%; margin-bottom: 15px;">Edit Users</a>
+        <div class="row">
+            <div class="col-md-6"> <a href="{{ url_for('main.new_user') }}" class="btn" style="text-align: center; background-color: #002169; color: white; width: 100%; margin-bottom: 15px;">Create New Users</a></div>
+            <div class="col-md-6"> <a href="{{ url_for('main.new_user_csv') }}" class="btn" style="text-align: center; background-color: #002169; color: white; width: 100%; margin-bottom: 15px;">Create New Users with Excel</a></div>
+        </div>
 
     </div>
     <!-- columns for athltes and teams -->
@@ -17,7 +26,7 @@
             <div class="col-md-6">
                 <h2 style="text-align: center; background-color: #002169;">Athletes</h2>
                 <input type="text" id="athleteSearch" onkeyup="filterList(this, document.getElementById('athleteList'))" placeholder="Search for athletes.." style="background-color: #333; color: white; width: 100%;">
-                <ul class="list-group" id="athleteList" style="background-color: #333;">
+                <ul class="list-group" id="athleteList" style="background-color: #333; height: 100%; overflow-y: auto;">
                     {% for athlete in athletes %}
                     <a href="/athlete/{{ athlete.id }}">
                         <li class="list-group-item" style="background-color: #333;">{{ athlete.first_name }} {{ athlete.last_name }}</li>
@@ -28,7 +37,7 @@
             <div class="col-md-6">
                 <h2 style="text-align: center; background-color: #002169;">Teams</h2>
                 <input type="text" id="teamSearch" onkeyup="filterList(this, document.getElementById('teamList'))" placeholder="Search for teams.." style="background-color: #333; color: white; width: 100%;">
-                <ul class="list-group" id="teamList" style="background-color: #333;">
+                <ul class="list-group" id="teamList" style="background-color: #333; height: 100%; overflow-y: auto;">
                     {% for team in teams %}
                         <a href="/team/{{ team.id }}">
                             <li class="list-group-item" style="background-color: #333;">{{ team.name }}</li>

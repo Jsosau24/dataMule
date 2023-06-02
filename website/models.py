@@ -1,12 +1,29 @@
+"""
+Jonathan Sosa 
+helper_functions.py
+may-jun 2023
+"""
+# models/class on the file (you can look these up and it will take you there)
+## User
+## Admin
+## Peak
+## Coach
+## Athlete
+## Team
+## TeamUserAssociation
+## Note
+
+# Imports
 from . import db
 from datetime import datetime
 from flask_login import UserMixin
 
+# Databse Models
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
-    colby_id = db.Column(db.Integer)
+    colby_id = db.Column(db.Integer, unique=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
@@ -69,8 +86,8 @@ class Team(db.Model):
 
 class TeamUserAssociation(db.Model):
     __tablename__ = 'team_members'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), primary_key=True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id', ondelete='CASCADE'), primary_key=True)
     role = db.Column(db.String(50))
     
     user = db.relationship(User, back_populates="team_associations")

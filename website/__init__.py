@@ -1,3 +1,15 @@
+"""
+Jonathan Sosa 
+__init__.py
+may-jun 2023
+"""
+
+# methods on the file (you can look these up and it will take you there)
+## create_app --> create the webpage function
+## create_database --> created the database
+## create_dummy_users --> created a dummy database
+
+# imports
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -97,7 +109,7 @@ def create_dummy_users():
                     status = 0,
                     gender = 'Male',
                     class_year = 2024,
-                    position = 'Pro'
+                    position = 'Other'
                     )
         db.session.add(dummy)
         db.session.commit()

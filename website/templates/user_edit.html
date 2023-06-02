@@ -1,3 +1,8 @@
+<!--
+Jonathan Sosa
+dataMULE
+May - June 23
+-->
 {% extends "base.html" %}
 {% block content %}
 
@@ -47,6 +52,7 @@
             </div>
             
             <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-danger" onclick="removeUser({{ edited_user.id }})">Remove User</button>
         </form>
     </div>
     
@@ -54,16 +60,43 @@
 
 
     <script>
-        function toggleOptions() {
-            var typeSelect = document.getElementById("type");
-            var athleteOptions = document.getElementById("athleteOptions");
-    
-            if (typeSelect.value === "athlete") {
-                athleteOptions.style.display = "block";
+function toggleOptions() {
+    var typeSelect = document.getElementById("type");
+    var athleteOptions = document.getElementById("athleteOptions");
+
+    if (typeSelect.value === "athlete") {
+        athleteOptions.style.display = "block";
+    } else {
+        athleteOptions.style.display = "none";
+    }
+}
+
+function removeUser(userId) {
+    // Send AJAX request to remove the user
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/user/remove/" + userId, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    alert("User removed successfully");
+                    window.location.href = "/";  // Redirect to the desired page
+                } else {
+                    alert("Failed to remove user");
+                }
             } else {
-                athleteOptions.style.display = "none";
+                alert("Failed to remove user");
             }
         }
+    };
+
+    xhr.send();
+}
+
+
     </script>
 
 </main>
